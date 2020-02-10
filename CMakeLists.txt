@@ -33,8 +33,6 @@ add_executable(GlobalPCADenoising GlobalPCADenoising.cpp)
 add_executable(HistogramStandarization HistogramStandarization.cpp)
 add_executable(TruncateNegatives TruncateNegatives.cpp)
 
-add_executable(tester test.cpp)
-
 # set -fPIC
 set_property(TARGET AdaptiveHistogramEqualization
 	                MaskImage
@@ -58,8 +56,6 @@ target_include_directories(GlobalPCADenoising PRIVATE ${ITK_INCLUDE_DIRS} ${LIBR
 target_include_directories(HistogramStandarization PRIVATE ${ITK_INCLUDE_DIRS} ${LIBRARY_DIR}/tools)
 target_include_directories(TruncateNegatives PRIVATE ${ITK_INCLUDE_DIRS} ${LIBRARY_DIR}/tools)
 
-target_include_directories(tester PRIVATE ${ITK_INCLUDE_DIRS} ${LIBRARY_DIR}/tools)
-
 target_link_libraries(AdaptiveHistogramEqualization PRIVATE ${ITK_LIBRARIES} OpenMP::OpenMP_CXX)
 target_link_libraries(MaskImage PRIVATE ${ITK_LIBRARIES} OpenMP::OpenMP_CXX)
 target_link_libraries(ConvertNIfTI3DSeriesTo3DVectorImage PRIVATE ${ITK_LIBRARIES} OpenMP::OpenMP_CXX)
@@ -68,8 +64,6 @@ target_link_libraries(ConvertNIfTI3DVectorImageTo4D PRIVATE ${ITK_LIBRARIES} Ope
 target_link_libraries(GlobalPCADenoising PRIVATE ${ITK_LIBRARIES} Eigen3::Eigen OpenMP::OpenMP_CXX)
 target_link_libraries(HistogramStandarization PRIVATE ${ITK_LIBRARIES} OpenMP::OpenMP_CXX)
 target_link_libraries(TruncateNegatives PRIVATE ${ITK_LIBRARIES} OpenMP::OpenMP_CXX)
-
-target_link_libraries(tester PRIVATE ${ITK_LIBRARIES} OpenMP::OpenMP_CXX)
 
 set(CMAKE_INSTALL_PREFIX ${CMAKE_CURRENT_BINARY_DIR})
 
