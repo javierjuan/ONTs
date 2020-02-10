@@ -28,7 +28,7 @@ void TruncateNegatives(char *argv [])
         ++iterator;
     }
     // Save image
-    ITKUtils::WriteNIfTIImage<ImageType>(image, std::string(argv[3]));
+    ITKUtils::WriteNIfTIImage<ImageType>(image, std::string(argv[2]));
 }
 
 
