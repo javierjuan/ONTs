@@ -31,7 +31,7 @@ int main(int argc, char *argv [])
     typedef itk::Image<unsigned char, 3> MaskType;
     try
     {
-        // Get multidimensional PWI
+        // Get PWI
         typename ComponentsImageType::Pointer PWI = ITKUtils::ReadNIfTIImage<ComponentsImageType>(std::string(argv[1]));
         // Get mask
         typename MaskType::Pointer mask = ITKUtils::ReadNIfTIImage<MaskType>(std::string(argv[2]));
@@ -47,6 +47,14 @@ int main(int argc, char *argv [])
         // Get user max number of components
         if (argc >= 7)
             maxComponents = std::atoi(argv[6]);
+        // Print configuration
+        std::cout << "CONFIGURATION" << std::endl;
+        std::cout << "-------------" << std::endl;
+        std::cout << "Variance explained" << std::endl;
+        std::cout << "\tValue: " << variance << std::endl;
+        std::cout << "Number of components" << std::endl;
+        std::cout << "\tMinium: " << minComponents << std::endl;
+        std::cout << "\tMaximum: " << maxComponents << std::endl;
         // Compute Non-Zeros mask
         typename MaskType::Pointer nonZerosMask = ITKUtils::ZerosMaskIntersect<ComponentsImageType, MaskType>(PWI, mask, true);
         // Convert to Eigen Matrix
@@ -54,6 +62,9 @@ int main(int argc, char *argv [])
         // Compute PCA filtering
         PrincipalComponentAnalysis pca;
         MatrixXf PWIPCARawdata = pca.filteringVarianceExplained(dataset, variance, minComponents, maxComponents);
+        std::cout << "PCA" << std::endl;
+        std::cout << "---" << std::endl;
+        std::cout << "Reconstruction with " << pca.components() << " of components" << std::endl;
         // Correct curves with negative values
         #pragma omp parallel for
         for (int i = 0; i < PWIPCARawdata.rows(); i++)

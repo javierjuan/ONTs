@@ -10,23 +10,21 @@
 
 #include <ITKUtils.hpp>
 #include <itkImage.h>
-#include <itkImageRegionConstIterator.h>
-#include <itkImageRegionConstIteratorWithIndex.h>
-#include <itkImageRegionIteratorWithIndex.h>
+#include <itkImageRegionIterator.h>
 
 
 template<typename ImageType>
 void TruncateNegatives(char *argv [])
 {
     // Read image
-    typename ImageType::Pointer image = ITKUtils::ReadNIfTIImage<ImageType>(std::string(argv[2]));
+    typename ImageType::Pointer image = ITKUtils::ReadNIfTIImage<ImageType>(std::string(argv[1]));
     // Truncate negatives
-    itk::ImageRegionConstIteratorWithIndex<ImageType> iterator(image, image->GetLargestPossibleRegion());
+    itk::ImageRegionIterator<ImageType> iterator(image, image->GetLargestPossibleRegion());
     iterator.GoToBegin();
     while (!iterator.IsAtEnd())
     {
         if (iterator.Get() < 0)
-            image->SetPixel(iterator.GetIndex(), 0);
+            iterator.Set(0);
         ++iterator;
     }
     // Save image
@@ -36,31 +34,29 @@ void TruncateNegatives(char *argv [])
 
 int main(int argc, char *argv [])
 {
-    if (argc != 4)
+    if (argc != 3)
     {
-        std::cerr << "Error! Invalid number of arguments!" << std::endl << "Usage: TruncateNegatives dimensions inputImage outputImage" << std::endl;
+        std::cerr << "Error! Invalid number of arguments!" << std::endl << "Usage: TruncateNegatives inputImage outputImage" << std::endl;
         return EXIT_FAILURE;
     }
 
-    // Typedefs
-    using ScalarImageType = itk::Image<float, 3>;
-    using ComponentsImageType = itk::Image<float, 4>;
+    typename itk::ImageIOBase::Pointer imageIO = ITKUtils::ReadImageInformation(std::string(argv[1]));
+    const unsigned int ImageDimension = imageIO->GetNumberOfDimensions();
 
-    // Get dimension
-    const unsigned int D = (unsigned int ) std::atoi(argv[1]);
+    if (ImageDimension < 2 || ImageDimension > 4)
+    {
+        std::cerr << "Unsupported image dimensions" << std::endl;
+        return EXIT_FAILURE;   
+    }
 
     try
     {
-        if (D == 3)
-            TruncateNegatives<ScalarImageType>(argv);
-        else if (D == 4)
-            TruncateNegatives<ComponentsImageType>(argv);
+        if (ImageDimension == 2)
+            TruncateNegatives<itk::Image<float, 2>>(argv);
+        else if (ImageDimension == 3)
+            TruncateNegatives<itk::Image<float, 3>>(argv);
         else
-        {
-            std::stringstream s;
-            s << "Unsupported image dimensions." << std::endl;
-            throw std::runtime_error(s.str());
-        }    
+            TruncateNegatives<itk::Image<float, 4>>(argv);
     }
     catch (itk::ExceptionObject & err)
     {

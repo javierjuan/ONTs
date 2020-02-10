@@ -52,19 +52,33 @@ int main(int argc, char *argv[])
         std::cerr << "Error! Invalid number of arguments!" << std::endl << "Usage: HistogramStandarization sourceImage referenceImage outputImage [bins=128] [matchPoints=10]" << std::endl;
         return EXIT_FAILURE;
     }
+
+    typename itk::ImageIOBase::Pointer sourceIO = ITKUtils::ReadImageInformation(std::string(argv[1]));
+    typename itk::ImageIOBase::Pointer referenceIO = ITKUtils::ReadImageInformation(std::string(argv[2]));
+
+    const unsigned int SourceImageDimension = sourceIO->GetNumberOfDimensions();
+    const unsigned int ReferenceImageDimension = referenceIO->GetNumberOfDimensions();
+
+    if (SourceImageDimension != ReferenceImageDimension)
+    {
+        std::cerr << "Incompatible image dimensions" << std::endl;
+        return EXIT_FAILURE;
+    }
+
+    if (SourceImageDimension < 2 || SourceImageDimension > 4)
+    {
+        std::cerr << "Unsupported image dimensions" << std::endl;
+        return EXIT_FAILURE;   
+    }
     
     try
     {
-        if (std::atoi(argv[1]) == 2)
+        if (SourceImageDimension == 2)
             HistogramMatching<itk::Image<float, 2>>(argc, argv);
-        else if (std::atoi(argv[1]) == 3)
+        else if (SourceImageDimension == 3)
             HistogramMatching<itk::Image<float, 3>>(argc, argv);
         else
-        {
-            std::stringstream s;
-            s << "Unsupported image dimensions." << std::endl;
-            throw std::runtime_error(s.str());
-        }
+            HistogramMatching<itk::Image<float, 4>>(argc, argv);
     }
     catch (itk::ExceptionObject & err)
     {
