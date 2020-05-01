@@ -56,7 +56,7 @@ int main(int argc, char *argv [])
         std::cout << "\tMinium: " << minComponents << std::endl;
         std::cout << "\tMaximum: " << maxComponents << std::endl;
         // Compute Non-Zeros mask
-        typename MaskType::Pointer nonZerosMask = ITKUtils::ZerosMaskIntersect<ComponentsImageType, MaskType>(PWI, mask, true);
+        typename MaskType::Pointer nonZerosMask = ITKUtils::ZerosMaskIntersect<ComponentsImageType, MaskType>(PWI, mask, true, false, 0.05);
         // Convert to Eigen Matrix
         MatrixXf dataset(EigenITK::toEigen<ComponentsImageType, MaskType>(PWI, nonZerosMask));
         // Compute PCA filtering
@@ -70,7 +70,7 @@ int main(int argc, char *argv [])
         for (int i = 0; i < PWIPCARawdata.rows(); i++)
         {
             ArrayXf row = PWIPCARawdata.row(i);
-            if ((row < 1).any())
+            if ((row <= 0).any())
                 PWIPCARawdata.row(i) = (row - row.minCoeff() + 1);
         }
         // Convert to ITK image
