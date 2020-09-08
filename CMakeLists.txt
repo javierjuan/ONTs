@@ -33,6 +33,7 @@ add_executable(ConvertNIfTI3DVectorImageTo4D ConvertNIfTI3DVectorImageTo4D.cpp)
 add_executable(GlobalPCADenoising GlobalPCADenoising.cpp)
 add_executable(HistogramStandardization HistogramStandarization.cpp)
 add_executable(TruncateNegatives TruncateNegatives.cpp)
+add_executable(CopyHeaderInformation CopyHeaderInformation.cpp)
 
 # set -fPIC
 set_property(TARGET AdaptiveHistogramEqualization
@@ -43,7 +44,8 @@ set_property(TARGET AdaptiveHistogramEqualization
 	                ConvertNIfTI3DVectorImageTo4D
 	                GlobalPCADenoising
 	                HistogramStandardization
-	                TruncateNegatives PROPERTY POSITION_INDEPENDENT_CODE ON)
+	                TruncateNegatives 
+	                CopyHeaderInformation PROPERTY POSITION_INDEPENDENT_CODE ON)
 
 # compile options
 #target_compile_options(svfmm PRIVATE -Wall -Wextra -Wno-comment -Wno-unused-variable -Wno-unused-parameter)
@@ -58,6 +60,7 @@ target_include_directories(ConvertNIfTI3DVectorImageTo4D PRIVATE ${ITK_INCLUDE_D
 target_include_directories(GlobalPCADenoising PRIVATE ${ITK_INCLUDE_DIRS} ${LIBRARY_DIR}/tools ${LIBRARY_DIR}/decomposition)
 target_include_directories(HistogramStandardization PRIVATE ${ITK_INCLUDE_DIRS} ${LIBRARY_DIR}/tools)
 target_include_directories(TruncateNegatives PRIVATE ${ITK_INCLUDE_DIRS} ${LIBRARY_DIR}/tools)
+target_include_directories(CopyHeaderInformation PRIVATE ${ITK_INCLUDE_DIRS} ${LIBRARY_DIR}/tools)
 
 target_link_libraries(AdaptiveHistogramEqualization PRIVATE ${ITK_LIBRARIES} OpenMP::OpenMP_CXX)
 target_link_libraries(MaskImage PRIVATE ${ITK_LIBRARIES} OpenMP::OpenMP_CXX)
@@ -68,8 +71,9 @@ target_link_libraries(ConvertNIfTI3DVectorImageTo4D PRIVATE ${ITK_LIBRARIES} Ope
 target_link_libraries(GlobalPCADenoising PRIVATE ${ITK_LIBRARIES} Eigen3::Eigen OpenMP::OpenMP_CXX)
 target_link_libraries(HistogramStandardization PRIVATE ${ITK_LIBRARIES} OpenMP::OpenMP_CXX)
 target_link_libraries(TruncateNegatives PRIVATE ${ITK_LIBRARIES} OpenMP::OpenMP_CXX)
+target_link_libraries(CopyHeaderInformation PRIVATE ${ITK_LIBRARIES} OpenMP::OpenMP_CXX)
 
-set(CMAKE_INSTALL_PREFIX ${CMAKE_CURRENT_BINARY_DIR})
+set(CMAKE_INSTALL_PREFIX "/opt/ONTs")
 
 install(TARGETS AdaptiveHistogramEqualization
 	            MaskImage
@@ -80,5 +84,6 @@ install(TARGETS AdaptiveHistogramEqualization
 	            GlobalPCADenoising
 	            HistogramStandardization
 	            TruncateNegatives
+	            CopyHeaderInformation
         CONFIGURATIONS Release
         RUNTIME DESTINATION bin)
