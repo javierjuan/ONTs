@@ -22,7 +22,7 @@ int main(int argc, char *argv [])
 {
     if (argc < 5)
     {
-        std::cerr << "Error! Invalid number of arguments!" << std::endl << "Usage: GlobalPCADenoising <InputNIfTIFile> <MaskNIfTIFile> <variance> <OutputNIFTIFile> [minComponents=5% of number of components] [maxComponents=25% of number of components]" << std::endl;
+        std::cerr << "Error! Invalid number of arguments!" << std::endl << "Usage: GlobalPCADenoising inputImage maskImage variance outputImage [minComponents=5% of number of components] [maxComponents=25% of number of components] [verbose=0]" << std::endl;
         return EXIT_FAILURE;
     }
 
@@ -39,22 +39,29 @@ int main(int argc, char *argv [])
         const double variance = std::strtod(argv[3], NULL);
         // Default min and max number of components
         typename ComponentsImageType::SizeType imageSize = PWI->GetLargestPossibleRegion().GetSize();
-        unsigned int minComponents = std::ceil(imageSize[3] * 0.05);
-        unsigned int maxComponents = std::ceil(imageSize[3] * 0.25);
+        unsigned int minComponents = std::ceil(imageSize[3] * 0.0500);
+        unsigned int maxComponents = std::ceil(imageSize[3] * 0.3333);
         // Get user min number of components
-        if (argc >= 6)
+        if (argc > 5)
             minComponents = std::atoi(argv[5]);
         // Get user max number of components
-        if (argc >= 7)
+        if (argc > 6)
             maxComponents = std::atoi(argv[6]);
+        // Get user max number of components
+        bool verbose = false;
+        if (argc > 7)
+            verbose = (bool) std::atoi(argv[7]);
         // Print configuration
-        std::cout << "CONFIGURATION" << std::endl;
-        std::cout << "-------------" << std::endl;
-        std::cout << "Variance explained" << std::endl;
-        std::cout << "\tValue: " << variance << std::endl;
-        std::cout << "Number of components" << std::endl;
-        std::cout << "\tMinium: " << minComponents << std::endl;
-        std::cout << "\tMaximum: " << maxComponents << std::endl;
+        if (verbose)
+        {
+            std::cout << "CONFIGURATION" << std::endl;
+            std::cout << "-------------" << std::endl;
+            std::cout << "Variance explained" << std::endl;
+            std::cout << "\tValue: " << variance << std::endl;
+            std::cout << "Number of components" << std::endl;
+            std::cout << "\tMinium: " << minComponents << std::endl;
+            std::cout << "\tMaximum: " << maxComponents << std::endl;    
+        }
         // Compute Non-Zeros mask
         typename MaskType::Pointer nonZerosMask = ITKUtils::ZerosMaskIntersect<ComponentsImageType, MaskType>(PWI, mask, true, false, 0.05);
         // Convert to Eigen Matrix
@@ -62,9 +69,12 @@ int main(int argc, char *argv [])
         // Compute PCA filtering
         PrincipalComponentAnalysis pca;
         MatrixXf PWIPCARawdata = pca.filteringVarianceExplained(dataset, variance, minComponents, maxComponents);
-        std::cout << "PCA" << std::endl;
-        std::cout << "---" << std::endl;
-        std::cout << "Reconstruction with " << pca.components() << " of components" << std::endl;
+        if (verbose)
+        {
+            std::cout << "PCA" << std::endl;
+            std::cout << "---" << std::endl;
+            std::cout << "Reconstruction with " << pca.components() << " components out of " << imageSize[3] << std::endl;
+        }
         // Correct curves with negative values
         #pragma omp parallel for
         for (int i = 0; i < PWIPCARawdata.rows(); i++)
