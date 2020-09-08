@@ -88,7 +88,7 @@ int main(int argc, char *argv [])
 {
     if (argc < 4)
     {
-        std::cerr << "Error! Invalid number of arguments!" << std::endl << "Usage: CastImage inputImage outputImage pixelType <rescaleIntensity=1>" << std::endl;
+        std::cerr << "Error! Invalid number of arguments!" << std::endl << "Usage: CastImage inputImage outputImage pixelType [rescaleIntensity=1]" << std::endl;
         std::cerr << "pixelType:\t0 -> float" << std::endl;
         std::cerr << "\t\t1 -> unsigned char" << std::endl;
         std::cerr << "\t\t2 -> unsigned short" << std::endl;
