@@ -26,6 +26,8 @@ void MaskImageEqualDimensions(char *argv[])
     using MaskImageFilterType = itk::MaskImageFilter<ImageType, MaskType>;
     // Create mask image filter
     typename MaskImageFilterType::Pointer maskFilter = MaskImageFilterType::New();
+    maskFilter->SetCoordinateTolerance(1e-4);
+    maskFilter->SetDirectionTolerance(1e-4);
     maskFilter->SetInput(image);
     maskFilter->SetMaskImage(mask);
     maskFilter->Update();
