@@ -52,11 +52,11 @@ int main(int argc, char *argv [])
     try
     {
         if (ImageDimension == 2)
-            TruncateNegatives<itk::Image<float, 2>>(argv);
+            TruncateNegatives<itk::Image<double, 2>>(argv);
         else if (ImageDimension == 3)
-            TruncateNegatives<itk::Image<float, 3>>(argv);
+            TruncateNegatives<itk::Image<double, 3>>(argv);
         else
-            TruncateNegatives<itk::Image<float, 4>>(argv);
+            TruncateNegatives<itk::Image<double, 4>>(argv);
     }
     catch (itk::ExceptionObject & err)
     {
