@@ -3,10 +3,6 @@ cmake_minimum_required(VERSION 3.10)
 # set the project name
 project(onts VERSION 1.0)
 
-# specify the C++ standard
-set(CMAKE_CXX_STANDARD 14)
-set(CMAKE_CXX_STANDARD_REQUIRED True)
-
 # specify build type
 set(CMAKE_BUILD_TYPE Release)
 
@@ -34,6 +30,7 @@ add_executable(GlobalPCADenoising GlobalPCADenoising.cpp)
 add_executable(HistogramStandardization HistogramStandarization.cpp)
 add_executable(TruncateNegatives TruncateNegatives.cpp)
 add_executable(CopyHeaderInformation CopyHeaderInformation.cpp)
+add_executable(SaveNIfTI SaveNIfTI.cpp)
 
 # set -fPIC
 set_property(TARGET AdaptiveHistogramEqualization
@@ -45,7 +42,8 @@ set_property(TARGET AdaptiveHistogramEqualization
 	                GlobalPCADenoising
 	                HistogramStandardization
 	                TruncateNegatives 
-	                CopyHeaderInformation PROPERTY POSITION_INDEPENDENT_CODE ON)
+	                CopyHeaderInformation 
+	                SaveNIfTI PROPERTY POSITION_INDEPENDENT_CODE ON)
 
 # compile options
 #target_compile_options(svfmm PRIVATE -Wall -Wextra -Wno-comment -Wno-unused-variable -Wno-unused-parameter)
@@ -61,6 +59,7 @@ target_include_directories(GlobalPCADenoising PRIVATE ${ITK_INCLUDE_DIRS} ${LIBR
 target_include_directories(HistogramStandardization PRIVATE ${ITK_INCLUDE_DIRS} ${LIBRARY_DIR}/tools)
 target_include_directories(TruncateNegatives PRIVATE ${ITK_INCLUDE_DIRS} ${LIBRARY_DIR}/tools)
 target_include_directories(CopyHeaderInformation PRIVATE ${ITK_INCLUDE_DIRS} ${LIBRARY_DIR}/tools)
+target_include_directories(SaveNIfTI PRIVATE ${ITK_INCLUDE_DIRS} ${LIBRARY_DIR}/tools)
 
 target_link_libraries(AdaptiveHistogramEqualization PRIVATE ${ITK_LIBRARIES} OpenMP::OpenMP_CXX)
 target_link_libraries(MaskImage PRIVATE ${ITK_LIBRARIES} OpenMP::OpenMP_CXX)
@@ -72,6 +71,7 @@ target_link_libraries(GlobalPCADenoising PRIVATE ${ITK_LIBRARIES} Eigen3::Eigen 
 target_link_libraries(HistogramStandardization PRIVATE ${ITK_LIBRARIES} OpenMP::OpenMP_CXX)
 target_link_libraries(TruncateNegatives PRIVATE ${ITK_LIBRARIES} OpenMP::OpenMP_CXX)
 target_link_libraries(CopyHeaderInformation PRIVATE ${ITK_LIBRARIES} OpenMP::OpenMP_CXX)
+target_link_libraries(SaveNIfTI PRIVATE ${ITK_LIBRARIES} OpenMP::OpenMP_CXX)
 
 set(CMAKE_INSTALL_PREFIX "/opt/ONTs")
 
@@ -85,5 +85,6 @@ install(TARGETS AdaptiveHistogramEqualization
 	            HistogramStandardization
 	            TruncateNegatives
 	            CopyHeaderInformation
+	            SaveNIfTI
         CONFIGURATIONS Release
         RUNTIME DESTINATION bin)
