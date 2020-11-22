@@ -25,11 +25,11 @@ void AdaptiveHistogramEqualization(int argc, char *argv[])
     double alpha = 0.8;
     double beta = 1;
     // Get user parameters
-    if (argc >= 5)
+    if (argc > 3)
         radius = (unsigned int) std::atoi(argv[3]);
-    if (argc >= 6)
+    if (argc > 4)
         alpha = std::strtod(argv[4], NULL);
-    if (argc >= 7)
+    if (argc > 5)
         beta = std::strtod(argv[5], NULL);
     // Adaptive Histogram equalization
     typename AdaptiveHistogramEqualizationImageFilterType::Pointer filter = AdaptiveHistogramEqualizationImageFilterType::New();
