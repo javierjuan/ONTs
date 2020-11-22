@@ -8,23 +8,69 @@
 * Truncate Negatives                                                       *
 ***************************************************************************/
 
+#include <cstdlib>
 #include <ITKUtils.hpp>
 #include <itkImage.h>
 #include <itkImageRegionIterator.h>
+#include <itkImageRegionIteratorWithIndex.h>
+
+
+template<typename ImageType, typename MaskType>
+void TruncateNegativesMask(int argc, char *argv [])
+{
+    // Image dimensions
+    const unsigned int ImageDimension = ImageType::ImageDimension;
+    // Read image
+    typename ImageType::Pointer image = ITKUtils::ReadNIfTIImage<ImageType>(std::string(argv[1]));
+    // Truncate value
+    const typename ImageType::PixelType truncateValue = (typename ImageType::PixelType) std::atof(argv[3]);
+    // Read mask
+    typename MaskType::Pointer mask = ITKUtils::ReadNIfTIImage<MaskType>(std::string(argv[4]));
+    // Inside mask truncate value
+    typename ImageType::PixelType truncateValueMask = 0;
+    if (argc > 5)
+        truncateValueMask = (typename ImageType::PixelType) std::atof(argv[5]);
+    // Truncate negatives
+    itk::ImageRegionIteratorWithIndex<ImageType> iterator(image, image->GetLargestPossibleRegion());
+    iterator.GoToBegin();
+    while (!iterator.IsAtEnd())
+    {
+        itk::Index<ImageDimension> index = iterator.GetIndex();
+        const typename ImageType::PixelType imageValue = image->GetPixel(index);
+        const typename MaskType::PixelType maskValue = mask->GetPixel(index);
+        if (maskValue)
+        {
+            if (imageValue < 0)
+                iterator.Set(truncateValueMask);
+        }
+        else
+        {
+            if (imageValue < 0)
+                iterator.Set(truncateValue);
+        }
+        ++iterator;
+    }
+    // Save image
+    ITKUtils::WriteNIfTIImage<ImageType>(image, std::string(argv[2]));
+}
 
 
 template<typename ImageType>
-void TruncateNegatives(char *argv [])
+void TruncateNegatives(int argc, char *argv [])
 {
     // Read image
     typename ImageType::Pointer image = ITKUtils::ReadNIfTIImage<ImageType>(std::string(argv[1]));
+    // Truncate value
+    typename ImageType::PixelType truncateValue = 0;
+    if (argc > 3)
+        truncateValue = (typename ImageType::PixelType) std::atof(argv[3]);
     // Truncate negatives
     itk::ImageRegionIterator<ImageType> iterator(image, image->GetLargestPossibleRegion());
     iterator.GoToBegin();
     while (!iterator.IsAtEnd())
     {
         if (iterator.Get() < 0)
-            iterator.Set(0);
+            iterator.Set(truncateValue);
         ++iterator;
     }
     // Save image
@@ -34,9 +80,9 @@ void TruncateNegatives(char *argv [])
 
 int main(int argc, char *argv [])
 {
-    if (argc != 3)
+    if (argc < 3 || argc > 6)
     {
-        std::cerr << "Error! Invalid number of arguments!" << std::endl << "Usage: TruncateNegatives inputImage outputImage" << std::endl;
+        std::cerr << "Error! Invalid number of arguments!" << std::endl << "Usage: TruncateNegatives inputImage outputImage [truncateValue=0] [maskImage] [insideMaskTruncateValue=0]" << std::endl;
         return EXIT_FAILURE;
     }
 
@@ -52,11 +98,20 @@ int main(int argc, char *argv [])
     try
     {
         if (ImageDimension == 2)
-            TruncateNegatives<itk::Image<double, 2>>(argv);
+            if (argc > 4)
+                TruncateNegativesMask<itk::Image<double, 2>, itk::Image<unsigned char, 2>>(argc, argv);
+            else
+                TruncateNegatives<itk::Image<double, 2>>(argc, argv);
         else if (ImageDimension == 3)
-            TruncateNegatives<itk::Image<double, 3>>(argv);
+            if (argc > 4)
+                TruncateNegativesMask<itk::Image<double, 3>, itk::Image<unsigned char, 3>>(argc, argv);
+            else
+                TruncateNegatives<itk::Image<double, 3>>(argc, argv);
         else
-            TruncateNegatives<itk::Image<double, 4>>(argv);
+            if (argc > 4)
+                TruncateNegativesMask<itk::Image<double, 4>, itk::Image<unsigned char, 4>>(argc, argv);
+            else
+                TruncateNegatives<itk::Image<double, 4>>(argc, argv);
     }
     catch (itk::ExceptionObject & err)
     {
