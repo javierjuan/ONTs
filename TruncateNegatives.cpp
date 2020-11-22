@@ -20,6 +20,7 @@ void TruncateNegativesMask(int argc, char *argv [])
 {
     // Image dimensions
     const unsigned int ImageDimension = ImageType::ImageDimension;
+    const unsigned int MaskDimension = MaskType::ImageDimension;
     // Read image
     typename ImageType::Pointer image = ITKUtils::ReadNIfTIImage<ImageType>(std::string(argv[1]));
     // Truncate value
@@ -35,17 +36,21 @@ void TruncateNegativesMask(int argc, char *argv [])
     iterator.GoToBegin();
     while (!iterator.IsAtEnd())
     {
-        itk::Index<ImageDimension> index = iterator.GetIndex();
-        const typename ImageType::PixelType imageValue = image->GetPixel(index);
-        const typename MaskType::PixelType maskValue = mask->GetPixel(index);
+        itk::Index<ImageDimension> imageIndex = iterator.GetIndex();
+        itk::Index<MaskDimension> maskIndex;
+        // Need to do this because I can pass a 4D image and a 3D mask (or a 3D image and a 3D mask, where, therefore, imageIndex = maskIndex)
+        for (int i = 0; i < MaskDimension; ++i)
+            maskIndex[i] = imageIndex[i];
+        const typename ImageType::PixelType imageValue = image->GetPixel(imageIndex);
+        const typename MaskType::PixelType maskValue = mask->GetPixel(maskIndex);
         if (maskValue)
         {
-            if (imageValue < 0)
+            if (imageValue <= 0)
                 iterator.Set(truncateValueMask);
         }
         else
         {
-            if (imageValue < 0)
+            if (imageValue <= 0)
                 iterator.Set(truncateValue);
         }
         ++iterator;
@@ -69,7 +74,7 @@ void TruncateNegatives(int argc, char *argv [])
     iterator.GoToBegin();
     while (!iterator.IsAtEnd())
     {
-        if (iterator.Get() < 0)
+        if (iterator.Get() <= 0)
             iterator.Set(truncateValue);
         ++iterator;
     }
@@ -109,7 +114,7 @@ int main(int argc, char *argv [])
                 TruncateNegatives<itk::Image<double, 3>>(argc, argv);
         else
             if (argc > 4)
-                TruncateNegativesMask<itk::Image<double, 4>, itk::Image<unsigned char, 4>>(argc, argv);
+                TruncateNegativesMask<itk::Image<double, 4>, itk::Image<unsigned char, 3>>(argc, argv);
             else
                 TruncateNegatives<itk::Image<double, 4>>(argc, argv);
     }
