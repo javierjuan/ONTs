@@ -18,10 +18,16 @@ template<typename InputImageType, typename OutputImageType>
 void _CastImage(int argc, char *argv [])
 {
     bool rescaleIntensity = true;
-    if (argc == 5)
+    float minimum;
+    float maximum;
+    if (argc > 4)
+    {
         rescaleIntensity = (bool) std::atoi(argv[4]);
+        minimum = (argc > 5) ? std::atof(argv[5]) : 0;
+        maximum = (argc > 6) ? std::atof(argv[6]) : (float) itk::NumericTraits<typename OutputImageType::PixelType>::max();
+    }
     
-    // Read image
+    // Read image (InputImageType is float for a correct intensity rescaling)
     typename InputImageType::Pointer image = ITKUtils::ReadNIfTIImage<InputImageType>(std::string(argv[1]));
 
     // Cast filter
@@ -34,8 +40,8 @@ void _CastImage(int argc, char *argv [])
         using RescaleType = itk::RescaleIntensityImageFilter<InputImageType, InputImageType>;
         typename RescaleType::Pointer rescale = RescaleType::New();
         rescale->SetInput(image);
-        rescale->SetOutputMinimum(0);
-        rescale->SetOutputMaximum(itk::NumericTraits<typename OutputImageType::PixelType>::max());
+        rescale->SetOutputMinimum(minimum);
+        rescale->SetOutputMaximum(maximum);
         rescale->Update();
         filter->SetInput(rescale->GetOutput());
     }
@@ -88,7 +94,7 @@ int main(int argc, char *argv [])
 {
     if (argc < 4)
     {
-        std::cerr << "Error! Invalid number of arguments!" << std::endl << "Usage: CastImage inputImage outputImage pixelType [rescaleIntensity=1]" << std::endl;
+        std::cerr << "Error! Invalid number of arguments!" << std::endl << "Usage: CastImage inputImage outputImage pixelType [rescaleIntensity=1] [minimum=0] [maximum=MAX]" << std::endl;
         std::cerr << "pixelType:\t0 -> float" << std::endl;
         std::cerr << "\t\t1 -> unsigned char" << std::endl;
         std::cerr << "\t\t2 -> unsigned short" << std::endl;
