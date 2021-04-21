@@ -45,12 +45,12 @@ void TruncateNegativesMask(int argc, char *argv [])
         const typename MaskType::PixelType maskValue = mask->GetPixel(maskIndex);
         if (maskValue)
         {
-            if (imageValue <= 0)
+            if (imageValue < 0)
                 iterator.Set(truncateValueMask);
         }
         else
         {
-            if (imageValue <= 0)
+            if (imageValue < 0)
                 iterator.Set(truncateValue);
         }
         ++iterator;
@@ -74,7 +74,7 @@ void TruncateNegatives(int argc, char *argv [])
     iterator.GoToBegin();
     while (!iterator.IsAtEnd())
     {
-        if (iterator.Get() <= 0)
+        if (iterator.Get() < 0)
             iterator.Set(truncateValue);
         ++iterator;
     }
