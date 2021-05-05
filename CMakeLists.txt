@@ -23,9 +23,9 @@ set(LIBRARY_DIR /home/javier/Library)
 add_executable(AdaptiveHistogramEqualization AdaptiveHistogramEqualization.cpp)
 add_executable(MaskImage MaskImage.cpp)
 add_executable(CastImage CastImage.cpp)
-add_executable(ConvertNIfTI3DSeriesTo3DVectorImage ConvertNIfTI3DSeriesTo3DVectorImage.cpp)
-add_executable(ConvertNIfTI3DSeriesTo4DImage ConvertNIfTI3DSeriesTo4DImage.cpp)
-add_executable(ConvertNIfTI3DVectorImageTo4D ConvertNIfTI3DVectorImageTo4D.cpp)
+add_executable(ConvertNIfTI3DImageSeriesTo3DVectorImage ConvertNIfTI3DImageSeriesTo3DVectorImage.cpp)
+add_executable(ConvertNIfTI3DImageSeriesTo4DImage ConvertNIfTI3DImageSeriesTo4DImage.cpp)
+add_executable(ConvertNIfTI3DVectorImageTo4DImage ConvertNIfTI3DVectorImageTo4DImage.cpp)
 add_executable(GlobalPCADenoising GlobalPCADenoising.cpp)
 add_executable(HistogramStandardization HistogramStandarization.cpp)
 add_executable(TruncateNegatives TruncateNegatives.cpp)
@@ -36,9 +36,9 @@ add_executable(SaveNIfTI SaveNIfTI.cpp)
 set_property(TARGET AdaptiveHistogramEqualization
 	                MaskImage
 	                CastImage
-	                ConvertNIfTI3DSeriesTo3DVectorImage
-	                ConvertNIfTI3DSeriesTo4DImage
-	                ConvertNIfTI3DVectorImageTo4D
+	                ConvertNIfTI3DImageSeriesTo3DVectorImage
+	                ConvertNIfTI3DImageSeriesTo4DImage
+	                ConvertNIfTI3DVectorImageTo4DImage
 	                GlobalPCADenoising
 	                HistogramStandardization
 	                TruncateNegatives 
@@ -52,9 +52,9 @@ add_compile_options(-Wall -Wextra -Wno-comment -Wno-unused-variable -Wno-unused-
 target_include_directories(AdaptiveHistogramEqualization PRIVATE ${ITK_INCLUDE_DIRS} ${LIBRARY_DIR}/tools)
 target_include_directories(MaskImage PRIVATE ${ITK_INCLUDE_DIRS} ${LIBRARY_DIR}/tools)
 target_include_directories(CastImage PRIVATE ${ITK_INCLUDE_DIRS} ${LIBRARY_DIR}/tools)
-target_include_directories(ConvertNIfTI3DSeriesTo3DVectorImage PRIVATE ${ITK_INCLUDE_DIRS})
-target_include_directories(ConvertNIfTI3DSeriesTo4DImage PRIVATE ${ITK_INCLUDE_DIRS})
-target_include_directories(ConvertNIfTI3DVectorImageTo4D PRIVATE ${ITK_INCLUDE_DIRS})
+target_include_directories(ConvertNIfTI3DImageSeriesTo3DVectorImage PRIVATE ${ITK_INCLUDE_DIRS})
+target_include_directories(ConvertNIfTI3DImageSeriesTo4DImage PRIVATE ${ITK_INCLUDE_DIRS})
+target_include_directories(ConvertNIfTI3DVectorImageTo4DImage PRIVATE ${ITK_INCLUDE_DIRS})
 target_include_directories(GlobalPCADenoising PRIVATE ${ITK_INCLUDE_DIRS} ${LIBRARY_DIR}/tools ${LIBRARY_DIR}/decomposition)
 target_include_directories(HistogramStandardization PRIVATE ${ITK_INCLUDE_DIRS} ${LIBRARY_DIR}/tools)
 target_include_directories(TruncateNegatives PRIVATE ${ITK_INCLUDE_DIRS} ${LIBRARY_DIR}/tools)
@@ -64,9 +64,9 @@ target_include_directories(SaveNIfTI PRIVATE ${ITK_INCLUDE_DIRS} ${LIBRARY_DIR}/
 target_link_libraries(AdaptiveHistogramEqualization PRIVATE ${ITK_LIBRARIES} OpenMP::OpenMP_CXX)
 target_link_libraries(MaskImage PRIVATE ${ITK_LIBRARIES} OpenMP::OpenMP_CXX)
 target_link_libraries(CastImage PRIVATE ${ITK_LIBRARIES} OpenMP::OpenMP_CXX)
-target_link_libraries(ConvertNIfTI3DSeriesTo3DVectorImage PRIVATE ${ITK_LIBRARIES} OpenMP::OpenMP_CXX)
-target_link_libraries(ConvertNIfTI3DSeriesTo4DImage PRIVATE ${ITK_LIBRARIES} OpenMP::OpenMP_CXX)
-target_link_libraries(ConvertNIfTI3DVectorImageTo4D PRIVATE ${ITK_LIBRARIES} OpenMP::OpenMP_CXX)
+target_link_libraries(ConvertNIfTI3DImageSeriesTo3DVectorImage PRIVATE ${ITK_LIBRARIES} OpenMP::OpenMP_CXX)
+target_link_libraries(ConvertNIfTI3DImageSeriesTo4DImage PRIVATE ${ITK_LIBRARIES} OpenMP::OpenMP_CXX)
+target_link_libraries(ConvertNIfTI3DVectorImageTo4DImage PRIVATE ${ITK_LIBRARIES} OpenMP::OpenMP_CXX)
 target_link_libraries(GlobalPCADenoising PRIVATE ${ITK_LIBRARIES} Eigen3::Eigen OpenMP::OpenMP_CXX)
 target_link_libraries(HistogramStandardization PRIVATE ${ITK_LIBRARIES} OpenMP::OpenMP_CXX)
 target_link_libraries(TruncateNegatives PRIVATE ${ITK_LIBRARIES} OpenMP::OpenMP_CXX)
@@ -78,9 +78,9 @@ set(CMAKE_INSTALL_PREFIX "/opt/ONTs")
 install(TARGETS AdaptiveHistogramEqualization
 	            MaskImage
 	            CastImage
-	            ConvertNIfTI3DSeriesTo3DVectorImage
-	            ConvertNIfTI3DSeriesTo4DImage
-	            ConvertNIfTI3DVectorImageTo4D
+	            ConvertNIfTI3DImageSeriesTo3DVectorImage
+	            ConvertNIfTI3DImageSeriesTo4DImage
+	            ConvertNIfTI3DVectorImageTo4DImage
 	            GlobalPCADenoising
 	            HistogramStandardization
 	            TruncateNegatives

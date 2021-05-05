@@ -59,6 +59,8 @@ int main(int argc, char *argv[])
 		}
 		imagesFilePaths.push_back(baseDirectory + PathSeparator + fileName);
 	}
+    // Sort image file paths in ascending order
+    std::sort(imagesFilePaths.begin(), imagesFilePaths.end());
 
 	// Set image reader
 	ImageReader::Pointer reader = ImageReader::New();
